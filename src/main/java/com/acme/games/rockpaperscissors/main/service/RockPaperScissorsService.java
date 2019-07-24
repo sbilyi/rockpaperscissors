@@ -5,6 +5,7 @@ import com.acme.games.rockpaperscissors.main.domain.Move;
 import com.acme.games.rockpaperscissors.main.domain.Round;
 import com.acme.games.rockpaperscissors.main.entities.Game;
 import com.acme.games.rockpaperscissors.main.repository.RockPaperScissorsRepository;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,9 +27,14 @@ public class RockPaperScissorsService implements GameService {
     public Game move(Long id, Move userMove) {
         Game game = repository.findById(id).orElse(new Game());
         Move systemMove = Move.values()[new Random().nextInt(Move.values().length)];
-        game.getRounds().add(new Round(userMove, systemMove));
+        game.getRounds().add(createRound(userMove, systemMove));
         repository.save(game);
         return game;
+    }
+
+    @NotNull
+    private Round createRound(Move userMove, Move systemMove) {
+        return new Round(userMove, systemMove, JudgeJosephDreddService.judge(userMove, systemMove));
     }
 
     @Override

@@ -1,17 +1,18 @@
 package com.acme.games.rockpaperscissors.main.domain;
 
-
-import com.acme.games.rockpaperscissors.main.service.JudgeJosephDreddService;
-
 public class Round {
+
     private Move userMove;
     private Move systemMove;
     private Winner winner;
 
-    public Round(Move userMove, Move systemMove) {
+    public Round() {
+    }
+
+    public Round(Move userMove, Move systemMove, Winner winner) {
         this.userMove = userMove;
         this.systemMove = systemMove;
-        this.winner = JudgeJosephDreddService.judge(userMove, systemMove);
+        this.winner = winner;
     }
 
     public Move getUserMove() {

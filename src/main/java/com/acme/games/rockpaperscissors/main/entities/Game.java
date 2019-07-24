@@ -1,6 +1,7 @@
 package com.acme.games.rockpaperscissors.main.entities;
 
 import com.acme.games.rockpaperscissors.main.domain.Round;
+import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -28,6 +29,7 @@ public class Game {
         this.id = id;
     }
 
+    @NotNull
     public List<Round> getRounds() {
         return rounds;
     }
