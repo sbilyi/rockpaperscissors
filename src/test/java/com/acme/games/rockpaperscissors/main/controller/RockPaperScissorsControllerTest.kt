@@ -1,11 +1,12 @@
 package com.acme.games.rockpaperscissors.main.controller
 
-import com.acme.games.rockpaperscissors.main.entities.Game
-import com.acme.games.rockpaperscissors.main.domain.Move
+import com.acme.games.rockpaperscissors.main.domain.Move.*
 import com.acme.games.rockpaperscissors.main.domain.Round
 import com.acme.games.rockpaperscissors.main.domain.Winner
+import com.acme.games.rockpaperscissors.main.entities.Game
 import com.acme.games.rockpaperscissors.main.service.GameService
 import org.hamcrest.CoreMatchers
+import org.hamcrest.CoreMatchers.hasItem
 import org.hamcrest.Matchers.hasSize
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -16,11 +17,11 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.web.servlet.MockMvc
-import java.util.*
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import java.util.*
 
 
 @RunWith(SpringRunner::class)
@@ -35,26 +36,32 @@ class RockPaperScissorsControllerTest {
 
     @Test
     @Throws(Exception::class)
-    fun givenEmployees_whenGetEmployees_thenReturnJsonArray() {
-        val moves = Arrays.asList(Round(Move.PAPER, Move.SCISSORS))
+    fun `statistics should return all rounds of moves`() {
+        val moves = Arrays.asList(Round(PAPER, SCISSORS), Round(ROCK, ROCK))
         given(service!!.rounds(1)).willReturn(moves)
         mvc!!.perform(get("/api/game/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath<Collection<*>>("$", hasSize<Any>(1)))
-                .andExpect(jsonPath<String>("$[0].userMove", CoreMatchers.`is`(Move.PAPER.toString())))
-                .andExpect(jsonPath<String>("$[0].systemMove", CoreMatchers.`is`(Move.SCISSORS.toString())))
-                .andExpect(jsonPath<String>("$[0].winner", CoreMatchers.`is`(Winner.SYSTEM.toString())))
+                .andExpect(jsonPath("$", hasSize<Any>(2)))
+                .andExpect(jsonPath("$..userMove", hasItem<Any>(PAPER.toString())))
+                .andExpect(jsonPath("$..userMove", hasItem<Any>(ROCK.toString())))
+                .andExpect(jsonPath("$..systemMove", hasItem<Any>(SCISSORS.toString())))
+                .andExpect(jsonPath("$..systemMove", hasItem<Any>(ROCK.toString())))
+                .andExpect(jsonPath("$..winner", hasItem<Any>(Winner.SYSTEM.toString())))
+                .andExpect(jsonPath("$..winner", hasItem<Any>(Winner.NONE.toString())))
     }
 
     @Test
-    fun `when game started unique id has returned`() {
+    fun `new game shouldn't have any rounds`() {
         val game = Game()
         game.id = 1L
         given(service!!.create()).willReturn(game)
-        mvc!!.perform(put("/api/game/")
+        mvc!!.perform(post("/api/game/")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$.id", CoreMatchers.`is`(1)))
+                .andExpect(jsonPath("$.rounds", hasSize<Any>(0)))
     }
+
+
 }

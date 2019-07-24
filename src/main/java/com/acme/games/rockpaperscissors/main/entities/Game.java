@@ -5,6 +5,7 @@ import com.acme.games.rockpaperscissors.main.domain.Round;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -14,6 +15,10 @@ public class Game {
     @Id
     @GeneratedValue
     private long id;
+
+    public Game() {
+        rounds = new ArrayList<>();
+    }
 
     public long getId() {
         return id;
