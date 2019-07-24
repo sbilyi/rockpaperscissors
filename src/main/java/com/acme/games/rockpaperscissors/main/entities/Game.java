@@ -32,4 +32,7 @@ public class Game {
         return rounds;
     }
 
+    public void setRounds(List<Round> rounds) {
+        this.rounds = rounds;
+    }
 }
