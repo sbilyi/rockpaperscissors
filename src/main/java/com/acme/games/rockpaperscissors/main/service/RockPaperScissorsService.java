@@ -1,6 +1,7 @@
-package com.acme.games.rockpaperscissors.main;
+package com.acme.games.rockpaperscissors.main.service;
 
 
+import com.acme.games.rockpaperscissors.main.entities.Game;
 import com.acme.games.rockpaperscissors.main.domain.Round;
 import com.acme.games.rockpaperscissors.main.repository.RockPaperScissorsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ public class RockPaperScissorsService implements GameService {
 
     @Override
     public List<Round> rounds(Long id) {
-        return repository.findById(id).orElse(new Game()).rounds;
+        return repository.findById(id).orElse(new Game()).getRounds();
     }
 
     @Override

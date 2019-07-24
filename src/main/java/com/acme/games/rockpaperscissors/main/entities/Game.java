@@ -1,4 +1,4 @@
-package com.acme.games.rockpaperscissors.main;
+package com.acme.games.rockpaperscissors.main.entities;
 
 import com.acme.games.rockpaperscissors.main.domain.Round;
 
@@ -9,13 +9,11 @@ import java.util.List;
 
 @Entity
 public class Game {
-    List<Round> rounds;
+    private List<Round> rounds;
 
     @Id
     @GeneratedValue
-
     private long id;
-
 
     public long getId() {
         return id;
@@ -24,4 +22,9 @@ public class Game {
     public void setId(long id) {
         this.id = id;
     }
+
+    public List<Round> getRounds() {
+        return rounds;
+    }
+
 }

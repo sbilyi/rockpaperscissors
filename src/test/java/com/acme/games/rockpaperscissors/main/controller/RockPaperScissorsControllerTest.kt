@@ -1,7 +1,10 @@
-package com.acme.games.rockpaperscissors.main
+package com.acme.games.rockpaperscissors.main.controller
 
+import com.acme.games.rockpaperscissors.main.entities.Game
 import com.acme.games.rockpaperscissors.main.domain.Move
 import com.acme.games.rockpaperscissors.main.domain.Round
+import com.acme.games.rockpaperscissors.main.domain.Winner
+import com.acme.games.rockpaperscissors.main.service.GameService
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Matchers.hasSize
 import org.junit.Test
@@ -39,7 +42,9 @@ class RockPaperScissorsControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath<Collection<*>>("$", hasSize<Any>(1)))
-//                .andExpect(jsonPath<String>("$[0].name", CoreMatchers.`is`(alex.name)))
+                .andExpect(jsonPath<String>("$[0].userMove", CoreMatchers.`is`(Move.PAPER.toString())))
+                .andExpect(jsonPath<String>("$[0].systemMove", CoreMatchers.`is`(Move.SCISSORS.toString())))
+                .andExpect(jsonPath<String>("$[0].winner", CoreMatchers.`is`(Winner.SYSTEM.toString())))
     }
 
     @Test
