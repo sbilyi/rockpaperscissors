@@ -8,10 +8,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * System\User  Rock     Paper       Scissors
- * Rock          =      USER         SYSTEM
- * Paper        SYSTEM   =           USER
- * Scissors     USER    SYSTEM        =
+ * This method could be injected as {@link org.springframework.beans.factory.annotation.Autowired}
+ * service, but there is no reason to do extra memory usage
+ * when the game rules are seems to not be changed in time.
+ * <p>
+ * Rock Paper Scissors regular matrix are:
+ * </p>
+ *
+ * <table>
+ *     <tr><td align="center">System\User</td><td align="center">Rock</td><td align="center">Paper</td><td align="center">Scissors</td></tr>
+ *     <tr><td align="center">Rock</td><td align="center">=</td><td align="center">USER</td><td align="center">SYSTEM</td></tr>
+ *     <tr><td align="center">Paper</td><td align="center">SYSTEM</td><td align="center">=</td><td align="center">USER</td></tr>
+ *     <tr><td align="center">Scissors</td><td align="center">USER</td><td align="center">SYSTEM</td><td align="center">=</td></tr>
+ * </table>
  */
 public class JudgeJosephDreddService {
 
