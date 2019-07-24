@@ -7,17 +7,18 @@ import com.acme.games.rockpaperscissors.main.domain.Round
 import com.acme.games.rockpaperscissors.main.domain.Winner
 import com.acme.games.rockpaperscissors.main.entities.Game
 import com.acme.games.rockpaperscissors.main.service.GameService
+import com.acme.games.rockpaperscissors.main.service.JudgeJosephDreddService
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.hasItem
 import org.hamcrest.Matchers.hasSize
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.BDDMockito.given
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
-import org.springframework.test.context.junit4.SpringRunner
+import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
@@ -25,7 +26,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.util.*
 
-@RunWith(SpringRunner::class)
+@ExtendWith(SpringExtension::class)
 @WebMvcTest(RockPaperScissorsController::class)
 class RockPaperScissorsControllerTest {
 
@@ -40,7 +41,7 @@ class RockPaperScissorsControllerTest {
     @Test
     @Throws(Exception::class)
     fun `statistics should return all rounds of moves`() {
-        val moves = Arrays.asList(Round(PAPER, SCISSORS), Round(ROCK, ROCK))
+        val moves = Arrays.asList(createRound(PAPER, SCISSORS), createRound(ROCK, ROCK))
         val game = Game()
         game.rounds = moves
         game.id = ID
@@ -75,7 +76,7 @@ class RockPaperScissorsControllerTest {
     fun `can support scissors move`() {
         val game = Game()
         game.id = ID
-        game.rounds = Arrays.asList(Round(Move.SCISSORS, Move.PAPER))
+        game.rounds = Arrays.asList(createRound(Move.SCISSORS, Move.PAPER))
 
         given(service!!.move(ID, SCISSORS)).willReturn(game)
         mvc!!.perform(post(String.format("%s/game/%d/%s", Paths.API_PATH, ID, Move.SCISSORS.toString()))
@@ -92,7 +93,7 @@ class RockPaperScissorsControllerTest {
     fun `can support paper move`() {
         val game = Game()
         game.id = ID
-        game.rounds = Arrays.asList(Round(Move.PAPER, Move.PAPER))
+        game.rounds = Arrays.asList(createRound(Move.PAPER, Move.PAPER))
 
         given(service!!.move(ID, PAPER)).willReturn(game)
         mvc!!.perform(post(String.format("%s/game/%d/%s", Paths.API_PATH, ID, Move.PAPER.toString()))
@@ -109,7 +110,7 @@ class RockPaperScissorsControllerTest {
     fun `can support rock move`() {
         val game = Game()
         game.id = ID
-        game.rounds = Arrays.asList(Round(Move.ROCK, Move.PAPER))
+        game.rounds = Arrays.asList(createRound(Move.ROCK, Move.PAPER))
 
         given(service!!.move(ID, ROCK)).willReturn(game)
         mvc!!.perform(post(String.format("%s/game/%d/%s", Paths.API_PATH, ID, Move.ROCK.toString()))
@@ -121,4 +122,7 @@ class RockPaperScissorsControllerTest {
                 .andExpect(jsonPath("$..systemMove", hasItem(Move.PAPER.toString())))
                 .andExpect(jsonPath("$..winner", hasItem(Winner.SYSTEM.toString())))
     }
+
+    private fun createRound(paper: Move, scissors: Move) =
+            Round(paper, scissors, JudgeJosephDreddService.judge(paper, scissors))
 }
