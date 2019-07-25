@@ -2,8 +2,8 @@ package com.acme.games.rockpaperscissors.main.service;
 
 
 import com.acme.games.rockpaperscissors.main.domain.Move;
-import com.acme.games.rockpaperscissors.main.domain.Round;
 import com.acme.games.rockpaperscissors.main.entities.Game;
+import com.acme.games.rockpaperscissors.main.entities.Round;
 import com.acme.games.rockpaperscissors.main.repository.RockPaperScissorsRepository;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;

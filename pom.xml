@@ -29,12 +29,22 @@
         </dependency>
 
         <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>${flyway-core.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>runtime</scope>
             <version>${h2.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>6.0.6</version>
+        </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
@@ -130,6 +140,7 @@
         <h2.version>1.4.194</h2.version>
         <kotlin.version>1.2.71</kotlin.version>
         <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
+        <flyway-core.version>5.2.4</flyway-core.version>
     </properties>
 
 </project>

@@ -1,9 +1,22 @@
-package com.acme.games.rockpaperscissors.main.domain;
+package com.acme.games.rockpaperscissors.main.entities;
 
+import com.acme.games.rockpaperscissors.main.domain.Move;
+import com.acme.games.rockpaperscissors.main.domain.Winner;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Entity
 public class Round {
+
+    @Id
+    @GeneratedValue
+    private Long id;
 
     private Move userMove;
     private Move systemMove;
+
     private Winner winner;
 
     public Round() {

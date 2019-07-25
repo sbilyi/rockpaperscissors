@@ -3,7 +3,7 @@ package com.acme.games.rockpaperscissors.main.controller
 import com.acme.games.rockpaperscissors.main.Paths
 import com.acme.games.rockpaperscissors.main.domain.Move
 import com.acme.games.rockpaperscissors.main.domain.Move.*
-import com.acme.games.rockpaperscissors.main.domain.Round
+import com.acme.games.rockpaperscissors.main.entities.Round
 import com.acme.games.rockpaperscissors.main.domain.Winner
 import com.acme.games.rockpaperscissors.main.entities.Game
 import com.acme.games.rockpaperscissors.main.service.GameService

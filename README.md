@@ -14,3 +14,24 @@ Deliverable
 2.	This is an open assignment in terms of how you structure the solution. You will be judged on the overall quality of the code (simplicity, presentation, performance).
 
 
+```sh
+$ curl -X POST http://localhost:8080/api/game
+  {‘id’: 1, ‘rounds’: []}
+$  curl -X POST  http://localhost:8080/api/game/{gameId}/{rock|paper|scissors}
+  {‘user’: ‘ROCK’, ’system’:’PAPER’, ‘winner’: ‘system’}
+$ curl -X POST  http://localhost:8080/api/game/{gameId}/terminate
+  {‘id’: gameId, ‘rounds’: […]}
+$ curl -X GET    http://localhost:8080/api/game/1
+  {‘id’: gameId, ‘rounds’: [
+  {‘user’: ‘ROCK’, ’system’:’PAPER’, ‘winner’: ‘system’},
+  {‘user’: ‘PAPER’, ’system’:’ROCK’, ‘winner’: ‘user’},
+  {‘user’: ‘ROCK’, ’system’:’ROCK’, ‘winner’: ‘none’},
+  {‘user’: ‘ROCK’, ’system’:’PAPER’, ‘winner’: ‘system’}
+  ]}
+```
+
+To access db we need to enter mysql image via docker execute command
+```sh
+$ docker exec -it rock-paper-scissors-mysql "/bin/bash"
+$ mysql -u therock -p rock-paper-scissors
+```

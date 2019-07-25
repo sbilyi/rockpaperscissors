@@ -1,0 +1,28 @@
+version: '3'
+services:
+  rock-paper-scissors-mysql:
+    container_name: rock-paper-scissors-mysql
+    image: mysql/mysql-server:5.7
+    environment:
+      MYSQL_DATABASE: rock-paper-scissors
+      MYSQL_ROOT_PASSWORD: rOckthat$_sc1ssOrs
+      MYSQL_USER: therock
+      MYSQL_PASSWORD: paperman#scissors300_0
+      MYSQL_ROOT_HOST: '%'
+    ports:
+      - "3306:3306"
+    restart: always
+
+  app:
+    build: .
+    volumes:
+      - .:/app
+      - ~/.m2:/root/.m2
+    working_dir: /app
+    ports:
+      - 8080:8080
+      - 8000:8000
+#    command: /usr/share/maven/bin/mvnDebug clean spring-boot:run
+    command: mvn clean spring-boot:run
+    depends_on:
+      - rock-paper-scissors-mysql
