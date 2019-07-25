@@ -37,6 +37,7 @@ public class RockPaperScissorsService implements GameService {
         return new Round(userMove, systemMove, JudgeJosephDreddService.judge(userMove, systemMove));
     }
 
+    // TODO should throw an exception
     @Override
     public Game find(Long id) {
         return repository.findById(id).get();

@@ -6,8 +6,10 @@ import com.acme.games.rockpaperscissors.main.domain.Winner;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "rounds")
 public class Round {
 
     @Id

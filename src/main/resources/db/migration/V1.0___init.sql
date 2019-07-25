@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS `Game` (
+CREATE TABLE IF NOT EXISTS `games` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `groups` varchar(255) DEFAULT NULL,
   `title` varchar(255) DEFAULT NULL,

@@ -2,14 +2,12 @@ package com.acme.games.rockpaperscissors.main.entities;
 
 import org.jetbrains.annotations.NotNull;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "games")
 public class Game {
     @OneToMany
     private List<Round> rounds;

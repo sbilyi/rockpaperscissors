@@ -46,7 +46,7 @@ public class RockPaperScissorsJpaConfig {
         LocalContainerEntityManagerFactoryBean em
                 = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource());
-        em.setPackagesToScan(new String[] { "com.acme.games.rockpaperscissors.main.entities" });
+        em.setPackagesToScan("com.acme.games.rockpaperscissors.main.entities");
 
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
