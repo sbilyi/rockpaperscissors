@@ -2,10 +2,16 @@ package com.acme.games.rockpaperscissors.main.service;
 
 import com.acme.games.rockpaperscissors.main.domain.Move;
 import com.acme.games.rockpaperscissors.main.domain.Winner;
+import com.acme.games.rockpaperscissors.main.entities.Round;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * This method could be injected as {@link org.springframework.beans.factory.annotation.Autowired}
@@ -22,28 +28,29 @@ import java.util.Map;
  *     <tr><td align="center">Scissors</td><td align="center">USER</td><td align="center">SYSTEM</td><td align="center">=</td></tr>
  * </table>
  */
+@Service
+@Scope
 public class JudgeJosephDreddService {
 
-    static final Map<ImmutablePair<Move, Move>, Winner> winnersPredefinedMap = new HashMap<>();
+    @Autowired
+    private RoundsRepository repository;
+
+    private Map<ImmutablePair<Move, Move>, Winner> winnersPredefinedMap = new HashMap<>();
 
     public JudgeJosephDreddService() {
     }
 
-    public static Winner judge(Move userMove, Move systemMove) {
+    public Winner judge(Move userMove, Move systemMove) {
+        if(Objects.nonNull(winnersPredefinedMap) || winnersPredefinedMap.isEmpty()) {
+            winnersPredefinedMap = loadRoundMap();
+        }
         return winnersPredefinedMap.get(new ImmutablePair<>(userMove, systemMove));
     }
 
-    static {
-        JudgeJosephDreddService.winnersPredefinedMap.put(new ImmutablePair<>(Move.ROCK, Move.ROCK), Winner.NONE);
-        JudgeJosephDreddService.winnersPredefinedMap.put(new ImmutablePair<>(Move.PAPER, Move.PAPER), Winner.NONE);
-        JudgeJosephDreddService.winnersPredefinedMap.put(new ImmutablePair<>(Move.SCISSORS, Move.SCISSORS), Winner.NONE);
-
-        JudgeJosephDreddService.winnersPredefinedMap.put(new ImmutablePair<>(Move.PAPER, Move.ROCK), Winner.USER);
-        JudgeJosephDreddService.winnersPredefinedMap.put(new ImmutablePair<>(Move.SCISSORS, Move.PAPER), Winner.USER);
-        JudgeJosephDreddService.winnersPredefinedMap.put(new ImmutablePair<>(Move.ROCK, Move.SCISSORS), Winner.USER);
-
-        JudgeJosephDreddService.winnersPredefinedMap.put(new ImmutablePair<>(Move.SCISSORS, Move.ROCK), Winner.SYSTEM);
-        JudgeJosephDreddService.winnersPredefinedMap.put(new ImmutablePair<>(Move.ROCK, Move.PAPER), Winner.SYSTEM);
-        JudgeJosephDreddService.winnersPredefinedMap.put(new ImmutablePair<>(Move.PAPER, Move.SCISSORS), Winner.SYSTEM);
+    private Map<ImmutablePair<Move, Move>, Winner> loadRoundMap() {
+        Map<ImmutablePair<Move, Move>, Winner> roundMap = new HashMap();
+        List<Round> rounds = repository.findAll();
+        rounds.forEach(r-> roundMap.put(new ImmutablePair<>(r.getUserMove(), r.getSystemMove()), r.getWinner()));
+        return roundMap;
     }
 }

@@ -17,6 +17,9 @@ public class RockPaperScissorsService implements GameService {
     @Autowired
     private RockPaperScissorsRepository repository;
 
+    @Autowired
+    private JudgeJosephDreddService judgeJosephDreddService;
+
     @Override
     public Game create() {
         Game game = new Game();
@@ -34,7 +37,7 @@ public class RockPaperScissorsService implements GameService {
 
     @NotNull
     private Round createRound(Move userMove, Move systemMove) {
-        return new Round(userMove, systemMove, JudgeJosephDreddService.judge(userMove, systemMove));
+        return new Round(userMove, systemMove, judgeJosephDreddService.judge(userMove, systemMove));
     }
 
     // TODO should throw an exception

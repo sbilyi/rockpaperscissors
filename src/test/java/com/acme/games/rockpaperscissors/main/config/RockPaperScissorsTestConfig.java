@@ -1,6 +1,7 @@
 package com.acme.games.rockpaperscissors.main.config;
 
 import com.acme.games.rockpaperscissors.main.service.GameService;
+import com.acme.games.rockpaperscissors.main.service.JudgeJosephDreddService;
 import com.acme.games.rockpaperscissors.main.service.RockPaperScissorsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,5 +12,10 @@ public class RockPaperScissorsTestConfig {
     @Bean
     public GameService gameService() {
         return new RockPaperScissorsService();
+    }
+
+    @Bean
+    public JudgeJosephDreddService judgeJosephDreddService() {
+        return new JudgeJosephDreddService();
     }
 }

@@ -3,47 +3,40 @@ package com.acme.games.rockpaperscissors.main.entities;
 import com.acme.games.rockpaperscissors.main.domain.Move;
 import com.acme.games.rockpaperscissors.main.domain.Winner;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "rounds")
 public class Round {
 
-    @Id
-    @GeneratedValue
-    private Long id;
+    @EmbeddedId
+    private MovePair moves;
 
-    private Move userMove;
-    private Move systemMove;
-
+    @Enumerated(EnumType.STRING)
     private Winner winner;
 
     public Round() {
     }
 
     public Round(Move userMove, Move systemMove, Winner winner) {
-        this.userMove = userMove;
-        this.systemMove = systemMove;
+        this.moves = new MovePair(userMove, systemMove);
         this.winner = winner;
     }
 
     public Move getUserMove() {
-        return userMove;
+        return moves.getUserMove();
     }
 
     public void setUserMove(Move userMove) {
-        this.userMove = userMove;
+        this.moves.setUserMove(userMove);
     }
 
     public Move getSystemMove() {
-        return systemMove;
+        return moves.getSystemMove();
     }
 
     public void setSystemMove(Move systemMove) {
-        this.systemMove = systemMove;
+        this.moves.setSystemMove(systemMove);
     }
 
     public Winner getWinner() {
@@ -53,8 +46,5 @@ public class Round {
     public void setWinner(Winner winner) {
         this.winner = winner;
     }
-
-
-
 
 }

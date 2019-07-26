@@ -2,7 +2,6 @@ package com.acme.games.rockpaperscissors.main
 
 import com.acme.games.rockpaperscissors.main.config.RockPaperScissorsJpaConfig
 import com.acme.games.rockpaperscissors.main.config.RockPaperScissorsTestConfig
-import com.acme.games.rockpaperscissors.main.entities.Game
 import com.acme.games.rockpaperscissors.main.repository.RockPaperScissorsRepository
 import com.acme.games.rockpaperscissors.main.service.RockPaperScissorsService
 import org.junit.jupiter.api.AfterEach
