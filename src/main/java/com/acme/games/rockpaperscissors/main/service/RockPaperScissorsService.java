@@ -21,8 +21,9 @@ public class RockPaperScissorsService implements GameService {
     private JudgeJosephDreddService judgeJosephDreddService;
 
     @Override
-    public Game create() {
+    public Game create(String userId) {
         Game game = new Game();
+        game.setUserId(userId);
         return repository.save(game);
     }
 

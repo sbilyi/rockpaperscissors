@@ -5,7 +5,7 @@ import com.acme.games.rockpaperscissors.main.entities.Game;
 
 public interface GameService {
 
-    Game create();
+    Game create(String userId);
 
     Game move(Long id, Move move);
 

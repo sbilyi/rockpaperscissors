@@ -1,8 +1,7 @@
 package com.acme.games.rockpaperscissors.main.entities;
 
-import org.jetbrains.annotations.NotNull;
-
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +14,9 @@ public class Game {
     @Id
     @GeneratedValue
     private long id;
+
+    @NotNull
+    private String userId;
 
     public Game() {
         rounds = new ArrayList<>();
@@ -36,4 +38,13 @@ public class Game {
     public void setRounds(List<Round> rounds) {
         this.rounds = rounds;
     }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
 }

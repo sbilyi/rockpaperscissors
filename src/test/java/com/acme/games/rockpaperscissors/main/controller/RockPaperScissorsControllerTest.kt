@@ -76,8 +76,9 @@ class RockPaperScissorsControllerTest {
     fun `new game shouldn't have any rounds`() {
         val game = Game()
         game.id = ID
-        given(service!!.create()).willReturn(game)
-        mvc!!.perform(post(String.format("%s/game/", Paths.API_PATH))
+        val userId: String = "sergii"
+        given(service!!.create(userId)).willReturn(game)
+        mvc!!.perform(post(String.format("%s/game/%s", Paths.API_PATH, userId))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$.id", `is`(1)))
@@ -91,13 +92,13 @@ class RockPaperScissorsControllerTest {
         game.rounds = listOf(createRound(SCISSORS, PAPER))
 
         given(service!!.move(ID, SCISSORS)).willReturn(game)
-        mvc!!.perform(post(String.format("%s/game/%d/%s", Paths.API_PATH, ID, Move.SCISSORS.toString()))
+        mvc!!.perform(post(String.format("%s/game/%d/%s", Paths.API_PATH, ID, SCISSORS.toString()))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$.id", `is`(ID.toInt())))
                 .andExpect(jsonPath("$.rounds", hasSize<Any>(1)))
-                .andExpect(jsonPath("$..userMove", hasItem(Move.SCISSORS.toString())))
-                .andExpect(jsonPath("$..systemMove", hasItem(Move.PAPER.toString())))
+                .andExpect(jsonPath("$..userMove", hasItem(SCISSORS.toString())))
+                .andExpect(jsonPath("$..systemMove", hasItem(PAPER.toString())))
                 .andExpect(jsonPath("$..winner", hasItem(Winner.USER.toString())))
     }
 
@@ -108,13 +109,13 @@ class RockPaperScissorsControllerTest {
         game.rounds = listOf(createRound(PAPER, PAPER))
 
         given(service!!.move(ID, PAPER)).willReturn(game)
-        mvc!!.perform(post(String.format("%s/game/%d/%s", Paths.API_PATH, ID, Move.PAPER.toString()))
+        mvc!!.perform(post(String.format("%s/game/%d/%s", Paths.API_PATH, ID, PAPER.toString()))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$.id", `is`(ID.toInt())))
                 .andExpect(jsonPath("$.rounds", hasSize<Any>(1)))
-                .andExpect(jsonPath("$..userMove", hasItem(Move.PAPER.toString())))
-                .andExpect(jsonPath("$..systemMove", hasItem(Move.PAPER.toString())))
+                .andExpect(jsonPath("$..userMove", hasItem(PAPER.toString())))
+                .andExpect(jsonPath("$..systemMove", hasItem(PAPER.toString())))
                 .andExpect(jsonPath("$..winner", hasItem(Winner.NONE.toString())))
     }
 
@@ -125,13 +126,13 @@ class RockPaperScissorsControllerTest {
         game.rounds = listOf(createRound(ROCK, PAPER))
 
         given(service!!.move(ID, ROCK)).willReturn(game)
-        mvc!!.perform(post(String.format("%s/game/%d/%s", Paths.API_PATH, ID, Move.ROCK.toString()))
+        mvc!!.perform(post(String.format("%s/game/%d/%s", Paths.API_PATH, ID, ROCK.toString()))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$.id", `is`(ID.toInt())))
                 .andExpect(jsonPath("$.rounds", hasSize<Any>(1)))
-                .andExpect(jsonPath("$..userMove", hasItem(Move.ROCK.toString())))
-                .andExpect(jsonPath("$..systemMove", hasItem(Move.PAPER.toString())))
+                .andExpect(jsonPath("$..userMove", hasItem(ROCK.toString())))
+                .andExpect(jsonPath("$..systemMove", hasItem(PAPER.toString())))
                 .andExpect(jsonPath("$..winner", hasItem(Winner.SYSTEM.toString())))
     }
 
