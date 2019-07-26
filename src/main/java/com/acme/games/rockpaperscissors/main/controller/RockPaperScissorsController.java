@@ -21,9 +21,9 @@ public class RockPaperScissorsController {
         return gameService.find(id);
     }
 
-    @RequestMapping(value = Paths.API_PATH + "/game", method = RequestMethod.POST)
-    public Game create() {
-        return gameService.create();
+    @RequestMapping(value = Paths.API_PATH + "/game/{userId}", method = RequestMethod.POST)
+    public Game newGame(@PathVariable("userId") String userId) {
+        return gameService.create(userId);
     }
 
     @RequestMapping(value = Paths.API_PATH + "/game/{id}/{move}", method = RequestMethod.POST)
