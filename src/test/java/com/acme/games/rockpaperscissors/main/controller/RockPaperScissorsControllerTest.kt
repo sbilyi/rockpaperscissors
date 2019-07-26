@@ -1,16 +1,16 @@
 package com.acme.games.rockpaperscissors.main.controller
 
 import com.acme.games.rockpaperscissors.main.Paths
+import com.acme.games.rockpaperscissors.main.domain.Game
 import com.acme.games.rockpaperscissors.main.domain.Move
 import com.acme.games.rockpaperscissors.main.domain.Move.*
 import com.acme.games.rockpaperscissors.main.domain.Winner
-import com.acme.games.rockpaperscissors.main.entities.Game
-import com.acme.games.rockpaperscissors.main.entities.Round
+import com.acme.games.rockpaperscissors.main.entities.GameEntity
+import com.acme.games.rockpaperscissors.main.entities.RoundEntity
 import com.acme.games.rockpaperscissors.main.service.GameService
 import com.acme.games.rockpaperscissors.main.service.JudgeJosephDreddService
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.hasItem
-import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -31,6 +31,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 class RockPaperScissorsControllerTest {
 
     val ID: Long = 1
+    val userId: String = "sergii"
 
     @Autowired
     private val mvc: MockMvc? = null
@@ -44,26 +45,30 @@ class RockPaperScissorsControllerTest {
     @BeforeEach
     internal fun setUp() {
         given(judgeJosephDreddService!!.judge(PAPER, SCISSORS)).willReturn(Winner.SYSTEM)
-        given(judgeJosephDreddService!!.judge(SCISSORS, PAPER)).willReturn(Winner.USER)
-        given(judgeJosephDreddService!!.judge(PAPER, PAPER)).willReturn(Winner.NONE)
-        given(judgeJosephDreddService!!.judge(ROCK, ROCK)).willReturn(Winner.NONE)
-        given(judgeJosephDreddService!!.judge(ROCK, PAPER)).willReturn(Winner.SYSTEM)
+        given(judgeJosephDreddService.judge(SCISSORS, PAPER)).willReturn(Winner.USER)
+        given(judgeJosephDreddService.judge(PAPER, PAPER)).willReturn(Winner.NONE)
+        given(judgeJosephDreddService.judge(ROCK, ROCK)).willReturn(Winner.NONE)
+        given(judgeJosephDreddService.judge(ROCK, PAPER)).willReturn(Winner.SYSTEM)
     }
 
     @Test
     @Throws(Exception::class)
     fun `statistics should return all rounds of moves`() {
-        val moves = listOf(createRound(PAPER, SCISSORS), createRound(ROCK, ROCK))
-        val game = Game()
-        game.rounds = moves
-        game.id = ID
+        val game1 = GameEntity()
+        game1.id = 1
+        game1.round = round(PAPER, SCISSORS, Winner.SYSTEM)
 
-        given(service!!.find(ID)).willReturn(game)
-        mvc!!.perform(get(String.format("%s/game/%d", Paths.API_PATH, ID))
+        val game2 = GameEntity()
+        game2.id = 2
+        game2.round = round(ROCK, ROCK, Winner.NONE)
+
+
+        given(service!!.findByUserId(userId)).willReturn(listOf(toGame(game1), toGame(game2)))
+        mvc!!.perform(get(String.format("%s/game/%s", Paths.API_PATH, userId))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk)
-                .andExpect(jsonPath("$.id", `is`(ID.toInt())))
-                .andExpect(jsonPath("$.rounds", hasSize<Any>(2)))
+                .andExpect(jsonPath("$..id", hasItem<Any>(game1.id.toInt())))
+                .andExpect(jsonPath("$..id", hasItem<Any>(game2.id.toInt())))
                 .andExpect(jsonPath("$..userMove", hasItem<Any>(PAPER.toString())))
                 .andExpect(jsonPath("$..userMove", hasItem<Any>(ROCK.toString())))
                 .andExpect(jsonPath("$..systemMove", hasItem<Any>(SCISSORS.toString())))
@@ -73,30 +78,16 @@ class RockPaperScissorsControllerTest {
     }
 
     @Test
-    fun `new game shouldn't have any rounds`() {
-        val game = Game()
-        game.id = ID
-        val userId: String = "sergii"
-        given(service!!.create(userId)).willReturn(game)
-        mvc!!.perform(post(String.format("%s/game/%s", Paths.API_PATH, userId))
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk)
-                .andExpect(jsonPath("$.id", `is`(1)))
-                .andExpect(jsonPath("$.rounds", hasSize<Any>(0)))
-    }
-
-    @Test
     fun `can support scissors move`() {
-        val game = Game()
+        val game = GameEntity()
         game.id = ID
-        game.rounds = listOf(createRound(SCISSORS, PAPER))
+        game.round = round(SCISSORS, PAPER, Winner.USER)
 
-        given(service!!.move(ID, SCISSORS)).willReturn(game)
-        mvc!!.perform(post(String.format("%s/game/%d/%s", Paths.API_PATH, ID, SCISSORS.toString()))
+        given(service!!.create(userId, SCISSORS)).willReturn(toGame(game))
+        mvc!!.perform(post(String.format("%s/game/%s/%s", Paths.API_PATH, userId, SCISSORS.toString()))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$.id", `is`(ID.toInt())))
-                .andExpect(jsonPath("$.rounds", hasSize<Any>(1)))
                 .andExpect(jsonPath("$..userMove", hasItem(SCISSORS.toString())))
                 .andExpect(jsonPath("$..systemMove", hasItem(PAPER.toString())))
                 .andExpect(jsonPath("$..winner", hasItem(Winner.USER.toString())))
@@ -104,16 +95,15 @@ class RockPaperScissorsControllerTest {
 
     @Test
     fun `can support paper move`() {
-        val game = Game()
+        val game = GameEntity()
         game.id = ID
-        game.rounds = listOf(createRound(PAPER, PAPER))
+        game.round = round(PAPER, PAPER, Winner.NONE)
 
-        given(service!!.move(ID, PAPER)).willReturn(game)
-        mvc!!.perform(post(String.format("%s/game/%d/%s", Paths.API_PATH, ID, PAPER.toString()))
+        given(service!!.create(userId, PAPER)).willReturn(toGame(game))
+        mvc!!.perform(post(String.format("%s/game/%s/%s", Paths.API_PATH, userId, PAPER.toString()))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$.id", `is`(ID.toInt())))
-                .andExpect(jsonPath("$.rounds", hasSize<Any>(1)))
                 .andExpect(jsonPath("$..userMove", hasItem(PAPER.toString())))
                 .andExpect(jsonPath("$..systemMove", hasItem(PAPER.toString())))
                 .andExpect(jsonPath("$..winner", hasItem(Winner.NONE.toString())))
@@ -121,21 +111,38 @@ class RockPaperScissorsControllerTest {
 
     @Test
     fun `can support rock move`() {
-        val game = Game()
+        val game = GameEntity()
         game.id = ID
-        game.rounds = listOf(createRound(ROCK, PAPER))
+        game.round = round(ROCK, PAPER, Winner.SYSTEM)
 
-        given(service!!.move(ID, ROCK)).willReturn(game)
-        mvc!!.perform(post(String.format("%s/game/%d/%s", Paths.API_PATH, ID, ROCK.toString()))
+        given(service!!.create(userId, ROCK)).willReturn(toGame(game))
+        mvc!!.perform(post(String.format("%s/game/%s/%s", Paths.API_PATH, userId, ROCK.toString()))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$.id", `is`(ID.toInt())))
-                .andExpect(jsonPath("$.rounds", hasSize<Any>(1)))
                 .andExpect(jsonPath("$..userMove", hasItem(ROCK.toString())))
                 .andExpect(jsonPath("$..systemMove", hasItem(PAPER.toString())))
                 .andExpect(jsonPath("$..winner", hasItem(Winner.SYSTEM.toString())))
     }
 
     private fun createRound(paper: Move, scissors: Move) =
-            Round(paper, scissors, judgeJosephDreddService!!.judge(paper, scissors))
+            round(paper, scissors, judgeJosephDreddService!!.judge(paper, scissors))
+
+    private fun round(userMove: Move, systemMove: Move, winner: Winner): RoundEntity {
+        val round = RoundEntity()
+        round.userMove = userMove
+        round.systemMove = systemMove
+        round.winner = winner
+        return round
+    }
+
+    private fun toGame(instance: GameEntity): Game {
+        val result = Game()
+        result.id = instance.id
+        result.userId = instance.userId
+        result.systemMove = instance.round.systemMove
+        result.userMove = instance.round.userMove
+        result.winner = instance.round.winner
+        return result
+    }
 }

@@ -26,10 +26,10 @@ import java.util.Properties;
 @PropertySource("application.properties")
 @EnableTransactionManagement
 public class RockPaperScissorsJpaConfig {
- 
+
     @Autowired
     private Environment env;
-     
+
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
@@ -37,7 +37,7 @@ public class RockPaperScissorsJpaConfig {
         dataSource.setUrl(env.getProperty("spring.datasource.url"));
         dataSource.setUsername(env.getProperty("spring.datasource.username"));
         dataSource.setPassword(env.getProperty("spring.datasource.password"));
- 
+
         return dataSource;
     }
 
@@ -64,14 +64,15 @@ public class RockPaperScissorsJpaConfig {
     }
 
     @Bean
-    public PersistenceExceptionTranslationPostProcessor exceptionTranslation(){
+    public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
         return new PersistenceExceptionTranslationPostProcessor();
     }
 
     Properties additionalProperties() {
         Properties properties = new Properties();
-        properties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
-        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
+        properties.setProperty("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
+        properties.setProperty("hibernate.dialect", env.getProperty("hibernate.dialect"));
+        properties.setProperty("spring.jpa.show-sql", env.getProperty("spring.jpa.show-sql"));
 
         return properties;
     }

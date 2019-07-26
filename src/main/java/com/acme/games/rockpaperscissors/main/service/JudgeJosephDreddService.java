@@ -2,7 +2,8 @@ package com.acme.games.rockpaperscissors.main.service;
 
 import com.acme.games.rockpaperscissors.main.domain.Move;
 import com.acme.games.rockpaperscissors.main.domain.Winner;
-import com.acme.games.rockpaperscissors.main.entities.Round;
+import com.acme.games.rockpaperscissors.main.entities.RoundEntity;
+import com.acme.games.rockpaperscissors.main.repository.RoundsRepository;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -41,7 +42,7 @@ public class JudgeJosephDreddService {
     }
 
     public Winner judge(Move userMove, Move systemMove) {
-        if(Objects.nonNull(winnersPredefinedMap) || winnersPredefinedMap.isEmpty()) {
+        if (Objects.nonNull(winnersPredefinedMap) || winnersPredefinedMap.isEmpty()) {
             winnersPredefinedMap = loadRoundMap();
         }
         return winnersPredefinedMap.get(new ImmutablePair<>(userMove, systemMove));
@@ -49,8 +50,13 @@ public class JudgeJosephDreddService {
 
     private Map<ImmutablePair<Move, Move>, Winner> loadRoundMap() {
         Map<ImmutablePair<Move, Move>, Winner> roundMap = new HashMap();
-        List<Round> rounds = repository.findAll();
-        rounds.forEach(r-> roundMap.put(new ImmutablePair<>(r.getUserMove(), r.getSystemMove()), r.getWinner()));
+        List<RoundEntity> roundEntities = repository.findAll();
+        roundEntities.forEach(r -> roundMap.put(new ImmutablePair<>(r.getUserMove(), r.getSystemMove()), r.getWinner()));
         return roundMap;
     }
+
+    public RoundEntity Round(Move userMove, Move systemMove) {
+        return repository.findByUserMoveAndSystemMove(userMove, systemMove);
+    }
+
 }

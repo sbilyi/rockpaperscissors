@@ -1,13 +1,21 @@
 package com.acme.games.rockpaperscissors.main.service;
 
+import com.acme.games.rockpaperscissors.main.domain.Game;
 import com.acme.games.rockpaperscissors.main.domain.Move;
-import com.acme.games.rockpaperscissors.main.entities.Game;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public interface GameService {
 
-    Game create(String userId);
+    Game
+    create(String userId, Move rock);
 
-    Game move(Long id, Move move);
+    Long count();
 
-    Game find(Long id);
+    List<Game> findAll();
+
+    @Nullable
+    List<Game> findByUserId(@NotNull String userId);
 }

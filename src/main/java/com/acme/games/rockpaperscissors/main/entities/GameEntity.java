@@ -2,24 +2,22 @@ package com.acme.games.rockpaperscissors.main.entities;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "games")
-public class Game {
-    @OneToMany
-    private List<Round> rounds;
-
+public class GameEntity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @NotNull
     private String userId;
 
-    public Game() {
-        rounds = new ArrayList<>();
+    @ManyToOne(targetEntity = RoundEntity.class)
+    @JoinColumn
+    private RoundEntity round;
+
+    public GameEntity() {
     }
 
     public long getId() {
@@ -30,15 +28,6 @@ public class Game {
         this.id = id;
     }
 
-    @NotNull
-    public List<Round> getRounds() {
-        return rounds;
-    }
-
-    public void setRounds(List<Round> rounds) {
-        this.rounds = rounds;
-    }
-
     public String getUserId() {
         return userId;
     }
@@ -47,4 +36,13 @@ public class Game {
         this.userId = userId;
     }
 
+    public RoundEntity getRound() {
+        return round;
+    }
+
+    public void setRound(RoundEntity round) {
+        if (round != null) {
+            this.round = round;
+        }
+    }
 }

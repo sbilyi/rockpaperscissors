@@ -1,28 +1,32 @@
-CREATE TABLE IF NOT EXISTS `games` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `groups` varchar(255) DEFAULT NULL,
-  `title` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-
 CREATE TABLE IF NOT EXISTS `rounds` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_move` varchar(255) NOT NULL,
   `system_move` varchar(255) NOT NULL,
   `winner` varchar(255) NOT NULL,
-  PRIMARY KEY (`user_move`, `system_move`)
+  PRIMARY KEY (`id`),
+  CONSTRAINT UC_rounds UNIQUE (`user_move`,`system_move`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
-INSERT INTO `rounds`(`user_move`, `system_move`, `winner`)
+CREATE TABLE IF NOT EXISTS `games` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` varchar(255) NOT NULL,
+  `round_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`round_id`)  REFERENCES `rounds` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+
+INSERT INTO `rounds`(`id`, `user_move`, `system_move`, `winner`)
 VALUES
-('ROCK', 'ROCK', 'NONE'),
-('PAPER', 'PAPER', 'NONE'),
-('SCISSORS', 'SCISSORS', 'NONE'),
+(1, 'ROCK', 'ROCK', 'NONE'),
+(2, 'PAPER', 'PAPER', 'NONE'),
+(3, 'SCISSORS', 'SCISSORS', 'NONE'),
 
-('PAPER', 'ROCK', 'USER'),
-('SCISSORS', 'PAPER', 'USER'),
-('ROCK', 'SCISSORS', 'USER'),
+(4, 'PAPER', 'ROCK', 'USER'),
+(5, 'SCISSORS', 'PAPER', 'USER'),
+(6, 'ROCK', 'SCISSORS', 'USER'),
 
-('ROCK', 'PAPER', 'SYSTEM'),
-('PAPER', 'SCISSORS', 'SYSTEM'),
-('SCISSORS', 'ROCK', 'SYSTEM')
+(7, 'ROCK', 'PAPER', 'SYSTEM'),
+(8, 'PAPER', 'SCISSORS', 'SYSTEM'),
+(9, 'SCISSORS', 'ROCK', 'SYSTEM')
 ;

@@ -7,7 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class Application {
 
     // TODO user move prediction system
-    // TODO RockPaperScissorsService tests as well
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }

@@ -1,15 +1,19 @@
 package com.acme.games.rockpaperscissors.main.service;
 
 
+import com.acme.games.rockpaperscissors.main.domain.Game;
 import com.acme.games.rockpaperscissors.main.domain.Move;
-import com.acme.games.rockpaperscissors.main.entities.Game;
-import com.acme.games.rockpaperscissors.main.entities.Round;
+import com.acme.games.rockpaperscissors.main.entities.GameEntity;
+import com.acme.games.rockpaperscissors.main.entities.RoundEntity;
 import com.acme.games.rockpaperscissors.main.repository.RockPaperScissorsRepository;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service("RockPaperScissorsService")
 public class RockPaperScissorsService implements GameService {
@@ -21,29 +25,42 @@ public class RockPaperScissorsService implements GameService {
     private JudgeJosephDreddService judgeJosephDreddService;
 
     @Override
-    public Game create(String userId) {
-        Game game = new Game();
+    public Game create(String userId, Move userMove) {
+        Move systemMove = Move.values()[new Random().nextInt(Move.values().length)];
+        RoundEntity roundEntity = judgeJosephDreddService.Round(userMove, systemMove);
+
+        GameEntity game = new GameEntity();
         game.setUserId(userId);
-        return repository.save(game);
+        game.setRound(roundEntity);
+        GameEntity savedGame = repository.save(game);
+
+        return toGame(savedGame);
     }
 
     @Override
-    public Game move(Long id, Move userMove) {
-        Game game = repository.findById(id).orElse(new Game());
-        Move systemMove = Move.values()[new Random().nextInt(Move.values().length)];
-        game.getRounds().add(createRound(userMove, systemMove));
-        repository.save(game);
-        return game;
+    public Long count() {
+        return repository.count();
+    }
+
+    @Override
+    public List<Game> findAll() {
+        return repository.findAll().stream().map(this::toGame).collect(Collectors.toList());
+    }
+
+    @Nullable
+    @Override
+    public List<Game> findByUserId(@NotNull String userId) {
+        return repository.findByUserId(userId).stream().map(this::toGame).collect(Collectors.toList());
     }
 
     @NotNull
-    private Round createRound(Move userMove, Move systemMove) {
-        return new Round(userMove, systemMove, judgeJosephDreddService.judge(userMove, systemMove));
-    }
-
-    // TODO should throw an exception
-    @Override
-    public Game find(Long id) {
-        return repository.findById(id).get();
+    private Game toGame(GameEntity savedGame) {
+        Game result = new Game();
+        result.setId(savedGame.getId());
+        result.setUserId(savedGame.getUserId());
+        result.setSystemMove(savedGame.getRound().getSystemMove());
+        result.setUserMove(savedGame.getRound().getUserMove());
+        result.setWinner(savedGame.getRound().getWinner());
+        return result;
     }
 }
