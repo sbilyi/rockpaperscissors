@@ -33,5 +33,5 @@ $ curl -X GET    http://localhost:8080/api/game/1
 To access db we need to enter mysql image via docker execute command
 ```sh
 $ docker exec -it rock-paper-scissors-mysql "/bin/bash"
-$ mysql -u therock -p rock-paper-scissors
+$ docker exec -it rock-paper-scissors-mysql sh -c 'exec mysql -uroot -p"$MYSQL_ROOT_PASSWORD" rock-paper-scissors'
 ```
