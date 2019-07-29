@@ -45,27 +45,27 @@ class ITRockPaperScissorsServiceTest {
     internal fun `service can predict user move ROCK`() {
 
         val move = Move.ROCK
-        var successPredictCounter = `test predicion system`(iterations, move)
+        val successPredictCounter = `test predicion system`(iterations, move)
         assertTrue { successPredictCounter > iterations * expectedRate }
     }
 
     @Test
     internal fun `service can predict user move PAPER`() {
         val move = Move.PAPER
-        var successPredictCounter = `test predicion system`(iterations, move)
+        val successPredictCounter = `test predicion system`(iterations, move)
         assertTrue { successPredictCounter > iterations * expectedRate }
     }
 
     @Test
     internal fun `service can predict user move SCISSORS`() {
         val move = Move.SCISSORS
-        var successPredictCounter = `test predicion system`(iterations, move)
+        val successPredictCounter = `test predicion system`(iterations, move)
         assertTrue { successPredictCounter > iterations * expectedRate }
     }
 
     @Test
     internal fun `stats could handle empty games list`() {
-        val stats = rockPaperScissorsService!!.findByUserId("nonameuserid")
+        val stats = rockPaperScissorsService!!.loadStats("nonameuserid")
         assertEquals(0, stats!!.gamesNumber)
         assertEquals(0f, stats.userWins)
         assertEquals(0f, stats.systemWins)

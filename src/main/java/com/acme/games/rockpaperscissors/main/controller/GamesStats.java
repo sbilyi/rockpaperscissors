@@ -18,8 +18,8 @@ public class GamesStats {
         int byUser = 0;
         int bySystem = 0;
 
-        userWins = games.size() == 0 ? 0 : games.stream().filter(e -> Winner.USER.equals(e.getWinner())).count() / games.size();
-        systemWins = games.size() == 0 ? 0 : games.stream().filter(e -> Winner.SYSTEM.equals(e.getWinner())).count() / games.size();
+        userWins = games.size() == 0 ? 0 : (float)games.stream().filter(e -> Winner.USER.equals(e.getWinner())).count() / games.size();
+        systemWins = games.size() == 0 ? 0 : (float)games.stream().filter(e -> Winner.SYSTEM.equals(e.getWinner())).count() / games.size();
         noneWins = games.size() == 0 ? 0 : 1 - userWins - systemWins;
         this.gamesNumber = games.size();
     }

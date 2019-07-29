@@ -38,7 +38,7 @@ class RockPaperScissorsServiceTest {
 
         BDDMockito.given(repository!!.findByUserId("sergii")).willReturn(listOf(game))
 
-        val data = service!!.findByUserId("sergii")
+        val data = service!!.loadStats("sergii")
         Assertions.assertAll(
                 Executable { assertEquals(1, data!!.gamesNumber) },
                 Executable { assertEquals(0f, data!!.noneWins) },
@@ -56,13 +56,13 @@ class RockPaperScissorsServiceTest {
     @Test
     internal fun `game stats could handle 2 games`() {
         val game1 = gameEntity("sergii", Move.SCISSORS, Move.PAPER, Winner.USER)
-        val game2 = gameEntity("sergii", Move.PAPER, Move.PAPER, Winner.USER)
+        val game2 = gameEntity("sergii", Move.PAPER, Move.PAPER, Winner.NONE)
 
-        BDDMockito.given(repository!!.findByUserId("sergii")).willReturn(listOf(game1))
+        BDDMockito.given(repository!!.findByUserId("sergii")).willReturn(listOf(game1, game2))
 
-        val data = service!!.findByUserId("sergii")
+        val data = service!!.loadStats("sergii")
         Assertions.assertAll(
-                Executable { assertEquals(1, data!!.gamesNumber) },
+                Executable { assertEquals(2, data!!.gamesNumber) },
                 Executable { assertEquals(0.5f, data!!.noneWins) },
                 Executable { assertEquals(0.5f, data!!.userWins) },
                 Executable { assertEquals(0f, data!!.systemWins) },
@@ -70,9 +70,9 @@ class RockPaperScissorsServiceTest {
         )
     }
 
-    private fun gameEntity(name: String, userMove: Move, systemMove: Move, winner: Winner): GameEntity {
+    private fun gameEntity(userId: String, userMove: Move, systemMove: Move, winner: Winner): GameEntity {
         val game = GameEntity()
-        game.userId = name
+        game.userId = userId
         game.round = RoundEntity()
         game.round.systemMove = systemMove
         game.round.userMove = userMove

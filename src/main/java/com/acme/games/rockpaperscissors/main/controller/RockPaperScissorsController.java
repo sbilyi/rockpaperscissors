@@ -18,7 +18,7 @@ public class RockPaperScissorsController {
 
     @RequestMapping(value = Paths.API_PATH + "/game/{userId}", method = RequestMethod.GET)
     public GamesStats statistics(@PathVariable("userId") String userId) {
-        return gameService.findByUserId(userId);
+        return gameService.loadStats(userId);
     }
 
     @RequestMapping(value = Paths.API_PATH + "/game/{userId}/{move}", method = RequestMethod.POST)

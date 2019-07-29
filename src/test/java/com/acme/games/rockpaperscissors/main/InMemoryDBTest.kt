@@ -7,7 +7,6 @@ import com.acme.games.rockpaperscissors.main.repository.RockPaperScissorsReposit
 import com.acme.games.rockpaperscissors.main.service.RockPaperScissorsService
 import org.flywaydb.test.FlywayTestExecutionListener
 import org.flywaydb.test.annotation.FlywayTest
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -19,7 +18,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.context.support.AnnotationConfigContextLoader
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener
 import javax.annotation.Resource
-import javax.transaction.Transactional
 import javax.validation.ConstraintViolationException
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -52,7 +50,7 @@ class InMemoryDBTest {
     fun `should save the game`() {
         val userId = "sergii"
         val expected = service!!.create(userId, Move.ROCK)
-        val actuals = service.findByUserId(userId)
+        val actuals = service.loadStats(userId)
         assertEquals(1, actuals!!.games.size)
         val actual = actuals.games[0]
         assertEquals(expected.userId, actual.userId)

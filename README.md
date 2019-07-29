@@ -49,5 +49,17 @@ $ docker exec -it rock-paper-scissors-mysql sh -c 'exec mysql -uroot -p"$MYSQL_R
 
 To run with in memory db
 ```
-$ java -jar -Dspring.config.location=classpath:inmemory-application.properties target/rock-paper-scissors-1.0-SNAPSHOT.jar
+$ mvn -DskipTests clean package && java -jar -Dspring.config.location=classpath:inmemory-application.properties target/rock-paper-scissors-1.0-SNAPSHOT.jar
+```
+
+To run in docker
+```
+$ docker-compose up --build  
+```
+
+To reset docker DB:
+```
+$ docker rm $(docker ps -a -q) -f
+$ docker volume prune
+
 ```

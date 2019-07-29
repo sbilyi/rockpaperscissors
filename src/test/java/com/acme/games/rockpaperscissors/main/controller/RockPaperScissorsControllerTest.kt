@@ -63,7 +63,7 @@ class RockPaperScissorsControllerTest {
         game2.round = round(ROCK, ROCK, Winner.NONE)
 
 
-        given(service!!.findByUserId(userId)).willReturn(GamesStats(listOf(toGame(game1), toGame(game2))))
+        given(service!!.loadStats(userId)).willReturn(GamesStats(listOf(toGame(game1), toGame(game2))))
         mvc!!.perform(get(String.format("%s/game/%s", Paths.API_PATH, userId))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk)
@@ -151,7 +151,7 @@ class RockPaperScissorsControllerTest {
         mvc!!.perform(post(String.format("%s/game/%s/%s", Paths.API_PATH, userId, "blablabla"))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().`is`(400))
-                .andExpect(jsonPath("$.message", `is`("Failed to convert value of type 'java.lang.String' to required type 'com.acme.games.rockpaperscissors.main.domain.Move'; nested exception is org.springframework.core.convert.ConversionFailedException: Failed to convert from type [java.lang.String] to type [@org.springframework.web.bind.annotation.PathVariable com.acme.games.rockpaperscissors.main.domain.Move] for value 'blablabla'; nested exception is java.lang.IllegalArgumentException: No enum constant com.acme.games.rockpaperscissors.main.domain.Move.blablabla")))
+                .andExpect(jsonPath("$.message", `is`("No enum constant com.acme.games.rockpaperscissors.main.domain.Move.BLABLABLA")))
     }
 
     private fun createRound(paper: Move, scissors: Move) =

@@ -58,7 +58,7 @@ public class RockPaperScissorsService implements GameService {
 
     @Nullable
     @Override
-    public GamesStats findByUserId(@NotNull String userId) {
+    public GamesStats loadStats(@NotNull String userId) {
         return new GamesStats(repository.findByUserId(userId).stream().map(this::toGame).collect(Collectors.toList()));
     }
 

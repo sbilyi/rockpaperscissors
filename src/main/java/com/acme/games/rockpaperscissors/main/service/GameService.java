@@ -18,5 +18,5 @@ public interface GameService {
     List<Game> findAll();
 
     @Nullable
-    GamesStats findByUserId(@NotNull String userId);
+    GamesStats loadStats(@NotNull String userId);
 }
