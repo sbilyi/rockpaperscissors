@@ -1,95 +1,82 @@
 package com.acme.games.rockpaperscissors.main.service
 
-import com.acme.games.rockpaperscissors.main.config.RockPaperScissorsJpaConfig
 import com.acme.games.rockpaperscissors.main.config.RockPaperScissorsTestConfig
-import com.acme.games.rockpaperscissors.main.domain.Game
 import com.acme.games.rockpaperscissors.main.domain.Move
 import com.acme.games.rockpaperscissors.main.domain.Winner
+import com.acme.games.rockpaperscissors.main.entities.GameEntity
+import com.acme.games.rockpaperscissors.main.entities.RoundEntity
 import com.acme.games.rockpaperscissors.main.repository.RockPaperScissorsRepository
-import org.flywaydb.test.FlywayTestExecutionListener
-import org.flywaydb.test.annotation.FlywayTest
-import org.junit.jupiter.api.AfterEach
+import com.acme.games.rockpaperscissors.main.repository.RoundsRepository
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.api.function.Executable
+import org.mockito.BDDMockito
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.TestExecutionListeners
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.context.support.AnnotationConfigContextLoader
-import org.springframework.test.context.support.DependencyInjectionTestExecutionListener
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 @ExtendWith(SpringExtension::class)
-@ContextConfiguration(classes = [RockPaperScissorsJpaConfig::class, RockPaperScissorsTestConfig::class, FlywayAutoConfiguration::class], loader = AnnotationConfigContextLoader::class)
-@TestExecutionListeners(listeners = [DependencyInjectionTestExecutionListener::class, FlywayTestExecutionListener::class])
-@FlywayTest
+@ContextConfiguration(classes = [RockPaperScissorsTestConfig::class], loader = AnnotationConfigContextLoader::class)
 class RockPaperScissorsServiceTest {
 
     @Autowired
-    val rockPaperScissorsService: RockPaperScissorsService? = null
+    val service: RockPaperScissorsService? = null
 
-    @Autowired
-    val rockPaperScissorsRepository: RockPaperScissorsRepository? = null
+    @MockBean
+    private val repository: RockPaperScissorsRepository? = null
 
-    @AfterEach
-    internal fun tearDown() {
-        rockPaperScissorsRepository!!.deleteAll()
-    }
-
-    val iterations = 200
-    val expectedRate = 0.5
+    @MockBean
+    private val roundsRepository: RoundsRepository? = null
 
     @Test
-    internal fun `service can predict user move ROCK`() {
+    internal fun `game stats could handle one game`() {
+        val game = gameEntity("sergii", Move.SCISSORS, Move.PAPER, Winner.USER)
 
-        val move = Move.ROCK
-        var successPredictCounter = `test predicion system`(iterations, move)
-        assertTrue { successPredictCounter > iterations * expectedRate }
-    }
+        BDDMockito.given(repository!!.findByUserId("sergii")).willReturn(listOf(game))
 
-    @Test
-    internal fun `service can predict user move PAPER`() {
-        val move = Move.PAPER
-        var successPredictCounter = `test predicion system`(iterations, move)
-        assertTrue { successPredictCounter > iterations * expectedRate }
-    }
-
-    @Test
-    internal fun `service can predict user move SCISSORS`() {
-        val move = Move.SCISSORS
-        var successPredictCounter = `test predicion system`(iterations, move)
-        assertTrue { successPredictCounter > iterations * expectedRate }
+        val data = service!!.findByUserId("sergii")
+        Assertions.assertAll(
+                Executable { assertEquals(1, data!!.gamesNumber) },
+                Executable { assertEquals(0f, data!!.noneWins) },
+                Executable { assertEquals(1f, data!!.userWins) },
+                Executable { assertEquals(0f, data!!.systemWins) },
+                Executable { assertEquals(1, data!!.games.size) }
+        )
+        assertEquals(1, data!!.gamesNumber)
+        assertEquals(0f, data.noneWins)
+        assertEquals(1f, data.userWins)
+        assertEquals(0f, data.systemWins)
+        assertEquals(1, data.games.size)
     }
 
     @Test
-    internal fun `stats could handle empty games list`() {
-        val stats = rockPaperScissorsService!!.findByUserId("nonameuserid")
-        assertEquals(0, stats!!.gamesNumber)
-        assertEquals(0f, stats.userWins)
-        assertEquals(0f, stats.systemWins)
-        assertEquals(0f, stats.noneWins)
-        assertEquals(0, stats.games.size)
+    internal fun `game stats could handle 2 games`() {
+        val game1 = gameEntity("sergii", Move.SCISSORS, Move.PAPER, Winner.USER)
+        val game2 = gameEntity("sergii", Move.PAPER, Move.PAPER, Winner.USER)
+
+        BDDMockito.given(repository!!.findByUserId("sergii")).willReturn(listOf(game1))
+
+        val data = service!!.findByUserId("sergii")
+        Assertions.assertAll(
+                Executable { assertEquals(1, data!!.gamesNumber) },
+                Executable { assertEquals(0.5f, data!!.noneWins) },
+                Executable { assertEquals(0.5f, data!!.userWins) },
+                Executable { assertEquals(0f, data!!.systemWins) },
+                Executable { assertEquals(2, data!!.games.size) }
+        )
     }
 
-
-    private fun `test predicion system`(iterations: Int, move: Move): Int {
-        for (i in 1..iterations) {
-            rockPaperScissorsService!!.create("sergii", move)
-        }
-
-        var successPredictCounter = 0
-        for (i in 1..iterations) {
-            successPredictCounter += test(Winner.SYSTEM, rockPaperScissorsService!!.create("sergii", move))
-        }
-        return successPredictCounter
+    private fun gameEntity(name: String, userMove: Move, systemMove: Move, winner: Winner): GameEntity {
+        val game = GameEntity()
+        game.userId = name
+        game.round = RoundEntity()
+        game.round.systemMove = systemMove
+        game.round.userMove = userMove
+        game.round.winner = winner
+        return game
     }
-
-    fun Boolean.toInt() = if (this) 1 else 0
-
-    private fun test(expected: Winner, game: Game): Int {
-        return (expected == game.winner).toInt()
-    }
-
 }

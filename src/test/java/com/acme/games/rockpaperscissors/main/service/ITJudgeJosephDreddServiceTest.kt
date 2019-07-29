@@ -23,7 +23,7 @@ import kotlin.test.assertEquals
 @ContextConfiguration(classes = [RockPaperScissorsJpaConfig::class, RockPaperScissorsTestConfig::class, FlywayAutoConfiguration::class], loader = AnnotationConfigContextLoader::class)
 @TestExecutionListeners(listeners = [DependencyInjectionTestExecutionListener::class, FlywayTestExecutionListener::class])
 @FlywayTest
-class JudgeJosephDreddServiceTest {
+class ITJudgeJosephDreddServiceTest {
 
     @Autowired
     private val judgeJosephDreddService: JudgeJosephDreddService? = null
