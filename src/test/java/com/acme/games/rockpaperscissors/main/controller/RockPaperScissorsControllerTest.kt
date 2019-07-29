@@ -125,6 +125,19 @@ class RockPaperScissorsControllerTest {
                 .andExpect(jsonPath("$..winner", hasItem(Winner.SYSTEM.toString())))
     }
 
+    @Test
+    fun `can't support wrong move`() {
+        val game = GameEntity()
+        game.id = ID
+        game.round = round(ROCK, PAPER, Winner.SYSTEM)
+
+        given(service!!.create(userId, ROCK)).willReturn(toGame(game))
+        mvc!!.perform(post(String.format("%s/game/%s/%s", Paths.API_PATH, userId, "blablabla"))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().`is`(400))
+                .andExpect(jsonPath("$.message", `is`("Failed to convert value of type 'java.lang.String' to required type 'com.acme.games.rockpaperscissors.main.domain.Move'; nested exception is org.springframework.core.convert.ConversionFailedException: Failed to convert from type [java.lang.String] to type [@org.springframework.web.bind.annotation.PathVariable com.acme.games.rockpaperscissors.main.domain.Move] for value 'blablabla'; nested exception is java.lang.IllegalArgumentException: No enum constant com.acme.games.rockpaperscissors.main.domain.Move.blablabla")))
+    }
+
     private fun createRound(paper: Move, scissors: Move) =
             round(paper, scissors, judgeJosephDreddService!!.judge(paper, scissors))
 
