@@ -59,4 +59,7 @@ public class JudgeJosephDreddService {
         return repository.findByUserMoveAndSystemMove(userMove, systemMove);
     }
 
+    public Move tellMeTheMoveToWin(Move predictedValue, Winner winner) {
+        return repository.finByUserMoveAndWinner(predictedValue, winner);
+    }
 }
