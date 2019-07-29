@@ -63,6 +63,17 @@ class RockPaperScissorsServiceTest {
         assertTrue { successPredictCounter > iterations * expectedRate }
     }
 
+    @Test
+    internal fun `stats could handle empty games list`() {
+        val stats = rockPaperScissorsService!!.findByUserId("nonameuserid")
+        assertEquals(0, stats!!.gamesNumber)
+        assertEquals(0f, stats.userWins)
+        assertEquals(0f, stats.systemWins)
+        assertEquals(0f, stats.noneWins)
+        assertEquals(0, stats.games.size)
+    }
+
+
     private fun `test predicion system`(iterations: Int, move: Move): Int {
         for (i in 1..iterations) {
             rockPaperScissorsService!!.create("sergii", move)

@@ -63,7 +63,7 @@ class RockPaperScissorsControllerTest {
         game2.round = round(ROCK, ROCK, Winner.NONE)
 
 
-        given(service!!.findByUserId(userId)).willReturn(listOf(toGame(game1), toGame(game2)))
+        given(service!!.findByUserId(userId)).willReturn(GamesStats(listOf(toGame(game1), toGame(game2))))
         mvc!!.perform(get(String.format("%s/game/%s", Paths.API_PATH, userId))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk)

@@ -3,15 +3,20 @@ package com.acme.games.rockpaperscissors.main.service;
 import com.acme.games.rockpaperscissors.main.domain.Move;
 import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 import static java.util.stream.Collectors.toMap;
 
 public class PredictionService {
     public PredictionService() {
+    }
+
+    private static int getFormula(Map.Entry<Move, Float> e, Random r) {
+        return r.nextInt((int) (13 * (e.getValue() * 3.7 + 3)));
     }
 
     Move predictModel(List<Move> trainingSet) {
@@ -37,44 +42,6 @@ public class PredictionService {
                 .findFirst()
                 .get()
                 .getKey();
-    }
-
-    /*public static void main(String[] args) {
-        Random r = new Random();
-
-        Map<Move, Float> stats = ImmutableMap.of(Move.ROCK, 0f, Move.PAPER, 1f, Move.SCISSORS, 0f);
-        ArrayList<Map<Move, Integer>> randomArray = new ArrayList<>();
-        for (int i = 0; i <= 100; i++){
-            randomArray.add(stats
-                    .entrySet()
-                    .stream()
-                    .map(e -> new ImmutablePair<>(e.getKey(), getFormula(e, r)))
-                    .collect(toMap(ImmutablePair::getLeft, ImmutablePair::getRight)));
-        }
-
-        Map<Move, ArrayList<Integer>> result = new HashMap<>();
-        for(Map<Move, Integer> map : randomArray) {
-            for(Map.Entry<Move, Integer> entry : map.entrySet()) {
-                ArrayList<Integer> values = result.get(entry.getKey());
-                if(Objects.isNull(values)) {
-                    values = new ArrayList<>();
-                    result.put(entry.getKey(), values);
-                }
-                values.add(entry.getValue());
-            }
-        }
-
-        Map<Move, Integer> percentages = stats.keySet().stream().map(key -> new ImmutablePair<>(key, 0)).collect(toMap(Pair::getKey, Pair::getValue));
-        for (Map.Entry<Move, ArrayList<Integer>> moveChances : result.entrySet()) {
-            Move key = moveChances.getKey();
-            percentages.get(key);
-        }
-
-        System.out.println(result);
-    }*/
-
-    private static int getFormula(Map.Entry<Move, Float> e, Random r) {
-        return r.nextInt((int) (13 * (e.getValue() * 1.7 + 3)));
     }
 
     private Map<Move, Float> analyze(List<Move> trainingSet) {

@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 public class RockPaperScissorsController {
 
@@ -19,7 +17,7 @@ public class RockPaperScissorsController {
     private GameService gameService;
 
     @RequestMapping(value = Paths.API_PATH + "/game/{userId}", method = RequestMethod.GET)
-    public List<Game> statistics(@PathVariable("userId") String userId) {
+    public GamesStats statistics(@PathVariable("userId") String userId) {
         return gameService.findByUserId(userId);
     }
 

@@ -53,8 +53,8 @@ class InMemoryDBTest {
         val userId = "sergii"
         val expected = service!!.create(userId, Move.ROCK)
         val actuals = service.findByUserId(userId)
-        assertEquals(1, actuals!!.size)
-        val actual = actuals[0]
+        assertEquals(1, actuals!!.games.size)
+        val actual = actuals.games[0]
         assertEquals(expected.userId, actual.userId)
         assertEquals(expected.userMove, actual.userMove)
 

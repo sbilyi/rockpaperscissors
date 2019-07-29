@@ -1,5 +1,6 @@
 package com.acme.games.rockpaperscissors.main.service;
 
+import com.acme.games.rockpaperscissors.main.controller.GamesStats;
 import com.acme.games.rockpaperscissors.main.domain.Game;
 import com.acme.games.rockpaperscissors.main.domain.Move;
 import org.jetbrains.annotations.NotNull;
@@ -17,5 +18,5 @@ public interface GameService {
     List<Game> findAll();
 
     @Nullable
-    List<Game> findByUserId(@NotNull String userId);
+    GamesStats findByUserId(@NotNull String userId);
 }

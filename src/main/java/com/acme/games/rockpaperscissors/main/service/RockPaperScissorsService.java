@@ -1,6 +1,7 @@
 package com.acme.games.rockpaperscissors.main.service;
 
 
+import com.acme.games.rockpaperscissors.main.controller.GamesStats;
 import com.acme.games.rockpaperscissors.main.domain.Game;
 import com.acme.games.rockpaperscissors.main.domain.Move;
 import com.acme.games.rockpaperscissors.main.domain.Winner;
@@ -42,7 +43,7 @@ public class RockPaperScissorsService implements GameService {
 
     @NotNull
     private List<Move> userMovesByUserId(String userId) {
-        return repository.findByUserId(userId).stream().map(e->e.getRound().getUserMove()).collect(Collectors.toList());
+        return repository.findByUserId(userId).stream().map(e -> e.getRound().getUserMove()).collect(Collectors.toList());
     }
 
     @Override
@@ -57,8 +58,8 @@ public class RockPaperScissorsService implements GameService {
 
     @Nullable
     @Override
-    public List<Game> findByUserId(@NotNull String userId) {
-        return repository.findByUserId(userId).stream().map(this::toGame).collect(Collectors.toList());
+    public GamesStats findByUserId(@NotNull String userId) {
+        return new GamesStats(repository.findByUserId(userId).stream().map(this::toGame).collect(Collectors.toList()));
     }
 
     @NotNull
