@@ -15,23 +15,39 @@ Deliverable
 
 
 ```sh
-$ curl -X POST http://localhost:8080/api/game
-  {‘id’: 1, ‘rounds’: []}
-$  curl -X POST  http://localhost:8080/api/game/{gameId}/{rock|paper|scissors}
-  {‘user’: ‘ROCK’, ’system’:’PAPER’, ‘winner’: ‘system’}
-$ curl -X POST  http://localhost:8080/api/game/{gameId}/terminate
-  {‘id’: gameId, ‘rounds’: […]}
-$ curl -X GET    http://localhost:8080/api/game/1
-  {‘id’: gameId, ‘rounds’: [
-  {‘user’: ‘ROCK’, ’system’:’PAPER’, ‘winner’: ‘system’},
-  {‘user’: ‘PAPER’, ’system’:’ROCK’, ‘winner’: ‘user’},
-  {‘user’: ‘ROCK’, ’system’:’ROCK’, ‘winner’: ‘none’},
-  {‘user’: ‘ROCK’, ’system’:’PAPER’, ‘winner’: ‘system’}
-  ]}
+$  curl -X POST http://localhost:8080/api/game/sergii/PAPER
+  {  
+     "id":4,
+     "userId":"sergii",
+     "userMove":"PAPER",
+     "systemMove":"PAPER",
+     "winner":"NONE"
+  }
+$  curl -X GET http://localhost:8080/api/game/sergii
+  {  
+     "gamesNumber":1,
+     "userWins":0.0,
+     "systemWins":0.0,
+     "noneWins":1.0,
+     "games":[  
+        {  
+           "id":1,
+           "userId":"sergii",
+           "userMove":"ROCK",
+           "systemMove":"ROCK",
+           "winner":"NONE"
+        }
+     ]
+  }
 ```
 
 To access db we need to enter mysql image via docker execute command
 ```sh
 $ docker exec -it rock-paper-scissors-mysql "/bin/bash"
 $ docker exec -it rock-paper-scissors-mysql sh -c 'exec mysql -uroot -p"$MYSQL_ROOT_PASSWORD" rock-paper-scissors'
+```
+
+To run with in memory db
+```
+$ java -jar -Dspring.config.location=classpath:inmemory-application.properties target/rock-paper-scissors-1.0-SNAPSHOT.jar
 ```
