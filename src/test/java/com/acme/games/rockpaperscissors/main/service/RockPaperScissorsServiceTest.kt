@@ -2,6 +2,7 @@ package com.acme.games.rockpaperscissors.main.service
 
 import com.acme.games.rockpaperscissors.main.config.RockPaperScissorsJpaConfig
 import com.acme.games.rockpaperscissors.main.config.RockPaperScissorsTestConfig
+import com.acme.games.rockpaperscissors.main.domain.Game
 import com.acme.games.rockpaperscissors.main.domain.Move
 import com.acme.games.rockpaperscissors.main.domain.Winner
 import com.acme.games.rockpaperscissors.main.repository.RockPaperScissorsRepository
@@ -37,46 +38,47 @@ class RockPaperScissorsServiceTest {
         rockPaperScissorsRepository!!.deleteAll()
     }
 
+    val iterations = 200
+    val expectedRate = 0.5
+
     @Test
     internal fun `service can predict user move ROCK`() {
-        for (i in 1..10) {
-            rockPaperScissorsService!!.create("sergii", Move.ROCK)
-        }
-        for (i in 1..10) {
-            assertEquals(Winner.SYSTEM, rockPaperScissorsService!!.create("sergii", Move.ROCK).winner)
-        }
+
+        val move = Move.ROCK
+        var successPredictCounter = `test predicion system`(iterations, move)
+        assertTrue { successPredictCounter > iterations * expectedRate }
     }
 
     @Test
     internal fun `service can predict user move PAPER`() {
-        for (i in 1..10) {
-            rockPaperScissorsService!!.create("sergii", Move.PAPER)
-        }
-        for (i in 1..10) {
-            assertEquals(Winner.SYSTEM, rockPaperScissorsService!!.create("sergii", Move.PAPER).winner)
-        }
+        val move = Move.PAPER
+        var successPredictCounter = `test predicion system`(iterations, move)
+        assertTrue { successPredictCounter > iterations * expectedRate }
     }
 
     @Test
     internal fun `service can predict user move SCISSORS`() {
-        for (i in 1..10) {
-            rockPaperScissorsService!!.create("sergii", Move.SCISSORS)
-        }
-        for (i in 1..10) {
-            assertEquals(Winner.SYSTEM, rockPaperScissorsService!!.create("sergii", Move.SCISSORS).winner)
-        }
+        val move = Move.SCISSORS
+        var successPredictCounter = `test predicion system`(iterations, move)
+        assertTrue { successPredictCounter > iterations * expectedRate }
     }
 
-    @Test
-    internal fun `service can predict user move SCISSORS OR PAPER`() {
-        for (i in 1..10) {
-            rockPaperScissorsService!!.create("sergii", Move.SCISSORS)
-            rockPaperScissorsService!!.create("sergii", Move.PAPER)
+    private fun `test predicion system`(iterations: Int, move: Move): Int {
+        for (i in 1..iterations) {
+            rockPaperScissorsService!!.create("sergii", move)
         }
-        for (i in 1..10) {
-            val game = rockPaperScissorsService!!.create("sergii", Move.SCISSORS)
-            assertTrue {  (Move.ROCK.equals(game.systemMove)) || (Move.SCISSORS.equals(game.systemMove))}
+
+        var successPredictCounter = 0
+        for (i in 1..iterations) {
+            successPredictCounter += test(Winner.SYSTEM, rockPaperScissorsService!!.create("sergii", move))
         }
+        return successPredictCounter
+    }
+
+    fun Boolean.toInt() = if (this) 1 else 0
+
+    private fun test(expected: Winner, game: Game): Int {
+        return (expected == game.winner).toInt()
     }
 
 }
