@@ -126,6 +126,22 @@ class RockPaperScissorsControllerTest {
     }
 
     @Test
+    fun `can support case insensitive move`() {
+        val game = GameEntity()
+        game.id = ID
+        game.round = round(ROCK, PAPER, Winner.SYSTEM)
+
+        given(service!!.create(userId, ROCK)).willReturn(toGame(game))
+        mvc!!.perform(post(String.format("%s/game/%s/%s", Paths.API_PATH, userId, ROCK.toString().toLowerCase()))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("$.id", `is`(ID.toInt())))
+                .andExpect(jsonPath("$..userMove", hasItem(ROCK.toString())))
+                .andExpect(jsonPath("$..systemMove", hasItem(PAPER.toString())))
+                .andExpect(jsonPath("$..winner", hasItem(Winner.SYSTEM.toString())))
+    }
+
+    @Test
     fun `can't support wrong move`() {
         val game = GameEntity()
         game.id = ID

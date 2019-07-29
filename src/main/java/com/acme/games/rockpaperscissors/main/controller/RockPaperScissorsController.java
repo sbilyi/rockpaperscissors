@@ -22,7 +22,7 @@ public class RockPaperScissorsController {
     }
 
     @RequestMapping(value = Paths.API_PATH + "/game/{userId}/{move}", method = RequestMethod.POST)
-    public Game newGame(@PathVariable("userId") String userId, @PathVariable("move") Move move) {
-        return gameService.create(userId, move);
+    public Game newGame(@PathVariable("userId") String userId, @PathVariable("move") String move) {
+        return gameService.create(userId, Move.valueOf(move.toUpperCase()));
     }
 }
